@@ -40,8 +40,6 @@ if [ ! -f "$DESTINATION/wkhtmltopdf" ]; then
 
 	cp $WKHTMLTOPDF_PATH/* $LDDESTINATION
 
-	echo '-----> Moving wkhtmltopdf binaries and libraries'
-
 	mv $DESTINATION/wkhtmltopdf $DESTINATION/_wkhtmltopdf
 	mv $DESTINATION/wkhtmltoimage $DESTINATION/_wkhtmltoimage
 
@@ -49,4 +47,7 @@ if [ ! -f "$DESTINATION/wkhtmltopdf" ]; then
 
 	echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltopdf \"\$@\"" > $DESTINATION/wkhtmltopdf
 	echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltoimage \"\$@\"" > $DESTINATION/wkhtmltoimage
+
+	chmod +x $DESTINATION/wkhtmltopdf
+	chmod +x $DESTINATION/wkhtmltoimage
 fi
