@@ -40,14 +40,14 @@ if [ ! -f "$DESTINATION/wkhtmltopdf" ]; then
 
 	cp $WKHTMLTOPDF_PATH/* $LDDESTINATION
 
-	mv $DESTINATION/wkhtmltopdf $DESTINATION/_wkhtmltopdf
-	mv $DESTINATION/wkhtmltoimage $DESTINATION/_wkhtmltoimage
+	#mv $DESTINATION/wkhtmltopdf $DESTINATION/_wkhtmltopdf
+	#mv $DESTINATION/wkhtmltoimage $DESTINATION/_wkhtmltoimage
 
-	echo '-----> Creating scripts to call with proper libraries'
+	#echo '-----> Creating scripts to call with proper libraries'
 
-	echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltopdf \"\$@\"" > $DESTINATION/wkhtmltopdf
-	echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltoimage \"\$@\"" > $DESTINATION/wkhtmltoimage
+	#echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltopdf \"\$@\"" > $DESTINATION/wkhtmltopdf
+	#echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltoimage \"\$@\"" > $DESTINATION/wkhtmltoimage
 
-	chmod +x $DESTINATION/wkhtmltopdf
-	chmod +x $DESTINATION/wkhtmltoimage
+	#chmod +x $DESTINATION/wkhtmltopdf
+	#chmod +x $DESTINATION/wkhtmltoimage
 fi
