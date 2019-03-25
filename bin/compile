@@ -6,7 +6,7 @@ CACHE_DIR=$2
 
 VERSION=0.12.5
 WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.xenial_amd64.deb"
-DEB_FILENAME=$CACHE_DIR/$(basename $WKHTMLTOPDF_URL)
+DEB_FILENAME=$CACHE_DIR/$VERSION/$(basename $WKHTMLTOPDF_URL)
 WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/usr/local/bin
 DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
 
