@@ -12,8 +12,6 @@ WKHTMLTOPDF_LDPATH=$CACHE_DIR/$VERSION/usr/local/bin
 DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
 LDDESTINATION=$BUILD_DIR/lib  # will be `/app/lib` inside dyno
 
-rm -rf $WKHTMLTOPDF_PATH $DESTINATION
-
 # Download and extract wkhtmltopdf
 if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 	echo '-----> Downloading wkhtmltopdf'
