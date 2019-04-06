@@ -5,53 +5,49 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 
 VERSION=0.12.5
-WKHTMLTOPDF_URL="https://raw.githubusercontent.com/comododragon/heroku-buildpack-wkhtmltopdf/master/bin/wkhtmltox_0.12.5-1.generic_amd64.tar.xz"
-PKG_FILENAME=$CACHE_DIR/$VERSION/$(basename $WKHTMLTOPDF_URL)
-WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/wkhtmltox_0.12.5-1.generic_amd64
-BIN_PATH=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
-LIB_PATH=$BUILD_DIR/lib
-SCRIPT_FILE=$BUILD_DIR/.profile.d/wkhtmltox.sh
-
-rm -rf $WKHTMLTOPDF_PATH
-rm -rf $BIN_PATH $LIB_PATH $SCRIPT_FILE
+WKHTMLTOPDF_URL="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.xenial_amd64.deb"
+DEB_FILENAME=$CACHE_DIR/$VERSION/$(basename $WKHTMLTOPDF_URL)
+WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/usr/local/bin
+WKHTMLTOPDF_LDPATH=$CACHE_DIR/$VERSION/usr/local/bin
+DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
+LDDESTINATION=$BUILD_DIR/lib  # will be `/app/lib` inside dyno
 
 # Download and extract wkhtmltopdf
-#if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
+if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 	echo '-----> Downloading wkhtmltopdf'
-	mkdir -p $(dirname $PKG_FILENAME)
-	wget --quiet --continue --output-document="$PKG_FILENAME" "$WKHTMLTOPDF_URL"
+	mkdir -p $(dirname $DEB_FILENAME)
+	wget --quiet --continue --output-document="$DEB_FILENAME" "$WKHTMLTOPDF_URL"
 
-	echo '-----> Extracting pkg file'
-	tar xvf wkhtmltox_0.12.5-1.generic_amd64.tar.xz --directory "$CACHE_DIR/$VERSION"
-	rm "$PKG_FILENAME"
-#fi
+	echo '-----> Extracting deb file'
+	ar vx "$DEB_FILENAME"
+	tar xvf data.tar.xz --directory "$CACHE_DIR/$VERSION"
+	rm "$DEB_FILENAME"
+fi
 
 # Move files to /app/bin
-if [ ! -f "$BIN_PATH/wkhtmltopdf" ]; then
-	echo '-----> Moving wkhtmltopdf binaries to /app/bin'
+if [ ! -f "$DESTINATION/wkhtmltopdf" ]; then
+	echo '-----> Moving wkhtmltopdf binaries and libraries'
 
-	if [ ! -d "$BIN_PATH" ]; then
-		mkdir -p "$BIN_PATH"
+	if [ ! -d "$DESTINATION" ]; then
+		mkdir -p "$DESTINATION"
 	fi
 
-	cp $WKHTMLTOPDF_PATH/bin/* $BIN_PATH
-fi
+	cp $WKHTMLTOPDF_PATH/* $DESTINATION
 
-# Move files to /app/lib
-if [ ! -f "$LIB_PATH/wkhtmltox.so.0" ]; then
-	echo '-----> Moving wkhtmltopdf libraries to /app/lib'
-
-	if [ ! -d "$LIB_PATH" ]; then
-		mkdir -p "$LIB_PATH"
+	if [ ! -d "$LDDESTINATION" ]; then
+		mkdir -p "$LDDESTINATION"
 	fi
 
-	cp $WKHTMLTOPDF_PATH/lib/* $LIB_PATH
-fi
+	cp $WKHTMLTOPDF_PATH/* $LDDESTINATION
 
-# Create config script
-if [ ! -f "$SCRIPT_FILE" ]; then
-	echo '-----> Creating /app/.profile.d/wkhtmltox.sh script'
+	#mv $DESTINATION/wkhtmltopdf $DESTINATION/_wkhtmltopdf
+	#mv $DESTINATION/wkhtmltoimage $DESTINATION/_wkhtmltoimage
 
-	mkdir -p $BUILD_DIR/.profile.d
-	#echo "export LD_LIBRARY_PATH=\$HOME/lib:\$LD_LIBRARY_PATH" > $SCRIPT_FILE
+	#echo '-----> Creating scripts to call with proper libraries'
+
+	#echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltopdf \"\$@\"" > $DESTINATION/wkhtmltopdf
+	#echo -e "#\!/bin/bash\n\nexport LD_LIBRARY_PATH=/app/lib:\$LD_LIBRARY_PATH\n/app/bin/_wkhtmltoimage \"\$@\"" > $DESTINATION/wkhtmltoimage
+
+	#chmod +x $DESTINATION/wkhtmltopdf
+	#chmod +x $DESTINATION/wkhtmltoimage
 fi
