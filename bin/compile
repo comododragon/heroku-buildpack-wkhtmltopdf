@@ -53,5 +53,5 @@ if [ ! -f "$SCRIPT_FILE" ]; then
 	echo '-----> Creating /app/.profile.d/wkhtmltox.sh script'
 
 	mkdir -p $BUILD_DIR/.profile.d
-	echo "export LD_LIBRARY_PATH=\$HOME/lib:\$LD_LIBRARY_PATH" > $SCRIPT_FILE
+	#echo "export LD_LIBRARY_PATH=\$HOME/lib:\$LD_LIBRARY_PATH" > $SCRIPT_FILE
 fi
