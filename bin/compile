@@ -7,7 +7,7 @@ CACHE_DIR=$2
 VERSION=0.12.5
 WKHTMLTOPDF_URL="https://raw.githubusercontent.com/comododragon/heroku-buildpack-wkhtmltopdf/master/bin/wkhtmltox_0.12.5-1.generic_amd64.tar.xz"
 PKG_FILENAME=$CACHE_DIR/$VERSION/$(basename $WKHTMLTOPDF_URL)
-WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/wkhtmltox_0.12.5-1.generic_amd64
+WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/wkhtmltox_0.12.5-1.generic_amd64/wkhtmltox_0.12.5-1.generic_amd64
 DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
 
 # Download and extract wkhtmltopdf
