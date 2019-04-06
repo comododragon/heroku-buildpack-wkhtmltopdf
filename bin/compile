@@ -7,11 +7,13 @@ CACHE_DIR=$2
 VERSION=0.12.5
 WKHTMLTOPDF_URL="https://raw.githubusercontent.com/comododragon/heroku-buildpack-wkhtmltopdf/master/bin/wkhtmltox_0.12.5-1.generic_amd64.tar.xz"
 PKG_FILENAME=$CACHE_DIR/$VERSION/$(basename $WKHTMLTOPDF_URL)
-WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/wkhtmltox_0.12.5-1.generic_amd64/wkhtmltox_0.12.5-1.generic_amd64
-DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
+WKHTMLTOPDF_PATH=$CACHE_DIR/$VERSION/wkhtmltox_0.12.5-1.generic_amd64
+BIN_PATH=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
+LIB_PATH=$BUILD_DIR/lib
+SCRIPT_FILE=$BUILD_DIR/.profile.d/wkhtmltox.sh
 
 rm -rf $WKHTMLTOPDF_PATH
-rm -rf $DESTINATION
+rm -rf $BIN_PATH $LIB_PATH $SCRIPT_FILE
 
 # Download and extract wkhtmltopdf
 #if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
@@ -25,12 +27,30 @@ rm -rf $DESTINATION
 #fi
 
 # Move files to /app/bin
-#if [ ! -f "$DESTINATION/wkhtmltopdf" ]; then
+if [ ! -f "$BIN_PATH/wkhtmltopdf" ]; then
 	echo '-----> Moving wkhtmltopdf binaries to /app/bin'
 
-	if [ ! -d "$DESTINATION" ]; then
-		mkdir -p "$DESTINATION"
+	if [ ! -d "$BIN_PATH" ]; then
+		mkdir -p "$BIN_PATH"
 	fi
 
-	cp $WKHTMLTOPDF_PATH/* $DESTINATION
-#fi
+	cp $WKHTMLTOPDF_PATH/bin/* $BIN_PATH
+fi
+
+# Move files to /app/lib
+if [ ! -f "$LIB_PATH/wkhtmltox.so.0" ]; then
+	echo '-----> Moving wkhtmltopdf libraries to /app/lib'
+
+	if [ ! -d "$LIB_PATH" ]; then
+		mkdir -p "$LIB_PATH"
+	fi
+
+	cp $WKHTMLTOPDF_PATH/lib/* $LIB_PATH
+fi
+
+# Create config script
+if [ ! -f "$SCRIPT_FILE" ]; then
+	echo '-----> Creating /app/.profile.d/wkhtmltox.sh script'
+
+	echo "export LD_LIBRARY_PATH=\$HOME/lib:\$LD_LIBRARY_PATH" > $HOME/.profile.d/wkhtmltox.sh
+fi
